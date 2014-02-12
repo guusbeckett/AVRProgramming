@@ -1,0 +1,209 @@
+\documentclass[10pt,a4paper]{report}
+\usepackage[latin1]{inputenc}
+\usepackage[dutch]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\author{Guus Beckett \\ \& \\ Jim van Abkoude}
+\title{Microcontrollers}
+\lstset { 
+    language=C,
+    frame=single,
+    escapeinside={\%*}{*)}, 
+    breaklines=true,  
+    backgroundcolor=\color{black!5},
+    basicstyle=\footnotesize,
+    commentstyle=\color{mygreen},
+    numberstyle=\tiny\color{mygray},
+    rulecolor=\color{black},
+    keywordstyle=\color{blue},
+}
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Week 1}
+\section{Practicum}
+Wij hebben het eerste college bij gewoont, waarin de organisatie van deze module aan bod kwam. Hierna zijn we naar Bart (de nieuwe Andries) gegaan en hebben wij ons kluisje opgehaald even als onze \glqq practicum kit\grqq . 
+\section{Ontwikkelomgeving klaarmaken voor gebruik}
+Aangezien wij beiden geen Windows gebruiken hebben wij een ontwikkelomgeving opgezet binnen unix/linux, met behulp van de JTAG ICE mk-II. Hierna hebben we op deze manier Blinky compiled en naar het bord gestuurd. Dit werkte perfect.
+\section{Uit de literatuur}
+\begin{enumerate}
+\item 128KB
+\item 0x02 (0x22)
+\item de instructie \glqq IN   R3, PORTA\grqq bestaat uit 2 bytes
+\item 2 RS232 poorten
+\item De \glqq ingang voor Analog digitaalconverter, channel 1\grqq bevind zich op poort 60
+\item 64KB
+\item Er zijn 6  I/O pinnen.
+\item Standaard is dit pull down.
+\end{enumerate}
+\section{Compileren van programma's}
+Dit hebben wij gedaan en succesvol afgerond. 
+\section{Vervolg op het programma Blinky}
+\begin{lstlisting}
+void flashLED()
+{
+	DDRD = 0xFF; 
+	int x = 0;
+		while(1)
+	{
+		
+		if(x)  
+		{
+			PORTD = 0b10000000;
+			x = 0;
+		}
+		else
+		{
+			PORTD = 0b01000000;
+			x = 1;
+		}
+		wait( 10000 );
+	}
+}
+\end{lstlisting}
+\section{Oefeningen met de C-omgeving: Toggle PORTD.7}
+\begin{lstlisting}
+void flashLEDOnButtonPress()
+{
+	DDRD = 0xFF;
+	DDRC = 0x00;
+	int x = 0;
+	while(1)
+	{
+		if(PINC==0xFE)
+		{
+			if(x)
+				{
+					PORTD = 0b01000000;
+					x = 0;
+				}
+			else
+				{
+					PORTD = 0;
+					x = 1;
+				}
+
+			
+		}
+		else
+			{
+				PORTD = 0;
+			}
+			wait(500);
+	}
+}
+\end{lstlisting}
+\newpage
+\section{Vervolg op het programma Toggle PORTD.7}
+\begin{lstlisting}
+void flashLEDOnButtonPressTwo()
+{
+	DDRD = 0xFF;
+	DDRC = 0x00;
+	int x = 0;
+	while(1)
+	{
+		if(PINC==0xFE)
+		{
+			if(x)
+				{
+					PORTD = 0b01000000;
+					x = 0;
+				}
+			else
+				{
+					PORTD = 0;
+					x = 1;
+				}
+
+			
+		}
+		else
+			{
+			
+			if(x)
+				{
+					PORTD = 0b00100000;
+					x = 0;
+				}
+			else
+				{
+					PORTD = 0;
+					x = 1;
+				}
+			}
+			
+		wait(500);
+	}
+}
+\end{lstlisting}
+\newpage
+\section{Oefening met de C-omgeving: RunningLight}
+\begin{lstlisting}
+void runningLight()
+{
+	DDRD = 0xFF;
+	DDRA = 0xFF;
+	DDRB = 0xFF;
+	DDRC = 0xFF;
+	int x = 0;
+		while (1)
+	{
+		if(x<9)
+		{
+			PORTD = (1<<x);
+			PORTC = (128>>x);
+			PORTB = (1<<x);
+			PORTA = (128>>x);
+						
+		}	
+		else 
+		{
+			PORTD = (128>>x-8);
+			PORTA = (1<<x-8);
+			
+			PORTB = (128>>x-8);
+			PORTC = (1<<x-8);	
+		}
+		wait( 500 );
+		++x;
+		++x;
+		if(x>=17) x=1;
+	}
+}
+\end{lstlisting}
+Uitleg: We hebben de opdracht een beetje opgevoerd, zodat deze er mooier uit ziet.
+\newpage
+\section{Programmeer een lichtslang}
+\begin{lstlisting}
+void lichtSlang()
+{
+	DDRD = 0xFF;
+	DDRA = 0xFF;
+	DDRB = 0xFF;
+	DDRC = 0xFF;
+	int x = 0;
+		while (1)
+	{
+		if(x<9)
+		{
+			PORTD = (1<<x);
+			PORTB = (1<<x);
+						
+		}	
+		else 
+		{
+			PORTA = (128>>x-8);	
+			PORTC = (128>>x-8);	
+		}
+		wait( 500 );
+		++x;
+		if(x==17) x=1;
+	}
+}
+\end{lstlisting}
+Uitleg: Wij hebben alweer de code iets uitgebreid, nu lopen er twee lichtslangen tegelijk.
+\end{document}

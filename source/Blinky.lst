@@ -1,0 +1,78 @@
+GAS LISTING /var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s 			page 1
+
+
+   1               		.file	"Blinky.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__RAMPZ__ = 0x3b
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.text
+   9               	.global	wait
+  10               		.type	wait, @function
+  11               	wait:
+  12               	/* prologue: function */
+  13               	/* frame size = 0 */
+  14               	/* stack size = 0 */
+  15               	.L__stack_usage = 0
+  16 0000 20E0      		ldi r18,0
+  17 0002 30E0      		ldi r19,0
+  18               	.L2:
+  19 0004 2817      		cp r18,r24
+  20 0006 3907      		cpc r19,r25
+  21 0008 04F4      		brge .L5
+  22 000a E9EF      		ldi r30,lo8(249)
+  23 000c F0E0      		ldi r31,hi8(249)
+  24 000e 3197      		1: sbiw r30,1
+  25 0010 01F4      		brne 1b
+  26 0012 00C0      		rjmp .
+  27 0014 0000      		nop
+  28 0016 2F5F      		subi r18,-1
+  29 0018 3F4F      		sbci r19,-1
+  30 001a 00C0      		rjmp .L2
+  31               	.L5:
+  32               	/* epilogue start */
+  33 001c 0895      		ret
+  34               		.size	wait, .-wait
+  35               		.section	.text.startup,"ax",@progbits
+  36               	.global	main
+  37               		.type	main, @function
+  38               	main:
+  39               	/* prologue: function */
+  40               	/* frame size = 0 */
+  41               	/* stack size = 0 */
+  42               	.L__stack_usage = 0
+  43 0000 8FEF      		ldi r24,lo8(-1)
+  44 0002 81BB      		out 0x11,r24
+  45 0004 CFEF      		ldi r28,lo8(-1)
+  46               	.L7:
+  47 0006 C2BB      		out 0x12,r28
+  48 0008 84EF      		ldi r24,lo8(-12)
+  49 000a 91E0      		ldi r25,lo8(1)
+  50 000c 0E94 0000 		call wait
+  51 0010 12BA      		out 0x12,__zero_reg__
+  52 0012 84EF      		ldi r24,lo8(-12)
+  53 0014 91E0      		ldi r25,lo8(1)
+  54 0016 0E94 0000 		call wait
+  55 001a 00C0      		rjmp .L7
+  56               		.size	main, .-main
+  57               		.ident	"GCC: (GNU) 4.8.1"
+GAS LISTING /var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s 			page 2
+
+
+GAS LISTING /var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Blinky.c
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:2      *ABS*:0000003e __SP_H__
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:3      *ABS*:0000003d __SP_L__
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:4      *ABS*:0000003f __SREG__
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:5      *ABS*:0000003b __RAMPZ__
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:6      *ABS*:00000000 __tmp_reg__
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:7      *ABS*:00000001 __zero_reg__
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:11     .text:00000000 wait
+/var/folders/_4/0gv1xzls4452yr8f8wz3qh880000gn/T//ccG8D7WE.s:38     .text.startup:00000000 main
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,60 @@
+TARGET	= bigAVR
+
+# Application source en include includes
+SRC_DIR	= ./source
+INC_DIR = ./include
+
+# WinAvr includes
+AVR_INC = /usr/local/CrossPack-AVR/include
+
+
+# Compiler, assembler & linker (flags)
+CC		= 	avr-gcc
+CFLAGS	= 	-mmcu=atmega128 -Os -Wall -Wstrict-prototypes \
+			-Wa,-ahlms=$(SRC_DIR)/$*lst -std=c99
+ASFLAGS = 	-mmcu=atmega128 -I. -x assembler-with-cpp -Wa,-ahlms=$(SRC_DIR)/$*lst,-gstabs 
+LDFLAGS	=	-mmcu=atmega128 -Wl,--defsym=main=0,--cref
+
+
+# =================================================================================
+# Source files
+CFILES =        Blinky.c						
+				
+# Header files.
+HFILES =        
+
+
+# Alle source files in de ./source dir
+SRCS =	$(addprefix $(SRC_DIR)/,$(CFILES))
+OBJS = 	$(SRCS:.c=.o)
+
+
+
+# Alle includes (header files) in de ./header dir
+INCS =	$(addprefix $(INC_DIR)/,$(HFILES))
+
+# Linking rule. All *.o to elf file. Then convert to *.hex
+$(TARGET):	$(OBJS)
+	$(CC) $(OBJS) $(LDFLAGS) -o $@.elf
+	avr-objcopy -O ihex $@.elf $@.hex
+#	hex2bin -ebin $@.hex
+
+# Compiling the objs's. avr-gcc autocalls assembler	
+$(SRC_DIR)/%o:	$(SRC_DIR)/%c 
+	$(CC) -c $< $(CFLAGS) -I$(INC_DIR) -I$(AVR_INC) -o $@
+
+	
+all: $(TARGET)
+
+debug:
+	
+	@echo $(OBJS)
+
+
+.PHONY: clean
+clean:
+	-rm -f $(OBJS)
+	-rm -f $(SRCS:.c=.lst)
+	-rm -f *.hex *.elf *.map *.bin
+
+

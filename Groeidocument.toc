@@ -1,0 +1,11 @@
+\select@language {dutch}
+\contentsline {chapter}{\numberline {1}Week 1}{2}
+\contentsline {section}{\numberline {1.1}Practicum}{2}
+\contentsline {section}{\numberline {1.2}Ontwikkelomgeving klaarmaken voor gebruik}{2}
+\contentsline {section}{\numberline {1.3}Uit de literatuur}{2}
+\contentsline {section}{\numberline {1.4}Compileren van programma's}{2}
+\contentsline {section}{\numberline {1.5}Vervolg op het programma Blinky}{3}
+\contentsline {section}{\numberline {1.6}Oefeningen met de C-omgeving: Toggle PORTD.7}{3}
+\contentsline {section}{\numberline {1.7}Vervolg op het programma Toggle PORTD.7}{4}
+\contentsline {section}{\numberline {1.8}Oefening met de C-omgeving: RunningLight}{5}
+\contentsline {section}{\numberline {1.9}Programmeer een lichtslang}{6}
