@@ -22,7 +22,7 @@
 
 #define BIT(x)	(1 << (x))
 
-unsigned int sCount=0, minutes=0, hours=0;
+unsigned int sCount=0, minutes=0, hours=0, days=0;
 
 // wait(): busy waiting for 'ms' millisecond
 // Used library: util/delay.h
@@ -50,6 +50,7 @@ ISR( TIMER1_COMPA_vect )
 			hours++;				//		Increment hours counter
 				if ( hours == 24 )	//		Every day:
 					hours = 0;		//			reset hours counter
+					++days;
 		}
 	}
 }
@@ -77,6 +78,12 @@ void displayTime( void )
 int main( void )
 {
 	lcd_init();					// For LCD
+	wait(50);
+	lcd_init();					// For LCD
+	wait(50);
+	lcd_init();					// For LCD
+	wait(50);
+	lcd_init();					// For LCD
 	char* nums = malloc(15*sizeof(char));	// For LCD
 	DDRD = 0xFF;				// set PORTD for output (shows s, min, h)
 	DDRB = 0xFF;
@@ -85,7 +92,7 @@ int main( void )
 	timer1Init();
 	while (1)
 	{
-		sprintf(nums, "Val1: %d", OCR1A); // For LCD
+		sprintf(nums, "%ddays %d:%d:%d", days,PORTA,PORTB,PORTD); // For LCD
 		lcd_wrLine1AtPos(nums, 0);		// For LCD
 		// do something else
 		wait(50);				// every 50 ms (busy waiting)
