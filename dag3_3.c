@@ -57,12 +57,12 @@ void timer2Init( void )
 // Main program: Counting on T2
 int main( void )
 {
-	lcd_init();
+	lcd_init();					// For LCD
 	DDRD &= ~BIT(7);			// set PORTD.7 for input
 	DDRA = 0xFF;				// set PORTA for output (shows countregister)
 	DDRB = 0xFF;				// set PORTB for output (shows tenth value)
 	timer2Init();				// Initialize timer 2
-	char* nums = malloc(15*sizeof(char));
+	char* nums = malloc(15*sizeof(char));	// For LCD
 	while (1)
 	{
 		sprintf(nums, "Val1: %d Val2: %d", TCNT2, twentyFifthValue); // For LCD

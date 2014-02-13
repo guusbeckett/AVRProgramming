@@ -39,7 +39,7 @@ void wait( int ms )
 ISR( TIMER1_COMPA_vect )
 {
 	sCount++;						// Increment s counter
-	PORTC ^= BIT(0);				// Toggle bit 0 van PORTC
+	PORTD ^= BIT(0);				// Toggle bit 0 van PORTD
 	if ( sCount == 60 )				// Every 1 minute:
 	{								//
 		minutes++;					//	Increment minutes counter
@@ -57,18 +57,18 @@ ISR( TIMER1_COMPA_vect )
 // Initialize timer 2: counting, preset, interrupt on overflow
 void timer1Init( void )
 {
-	OCR1A = 31500;					// 16-bits compare value of counter 1
+	OCR1A = 525;					// 16-bits compare value of counter 1
 	TIMSK |= BIT(4);				// T1 compare match A interrupt enable
 	SREG |= BIT(7);					// turn_on intr all
 	TCCR1B = 0b00001100;			// Initialize T1: timer, prescaler=256, 
 									// 	compare output disconnected, CTC, RUN
 }
 
-// Display seconds on PORTC, minutes on PORTB& hours on PORTA
+// Display seconds on PORTD, minutes on PORTB& hours on PORTA
 // 
 void displayTime( void )
 {
-	PORTC = sCount;
+	PORTD = sCount;
 	PORTB = minutes;
 	PORTA = hours;
 }
@@ -76,13 +76,17 @@ void displayTime( void )
 // Main program: Counting on T1
 int main( void )
 {
-	DDRC = 0xFF;				// set PORTC for output (shows s, min, h)
+	lcd_init();					// For LCD
+	char* nums = malloc(15*sizeof(char));	// For LCD
+	DDRD = 0xFF;				// set PORTD for output (shows s, min, h)
 	DDRB = 0xFF;
 	DDRA = 0xFF;
+	DDRD = 0xFF;
 	timer1Init();
-
 	while (1)
 	{
+		sprintf(nums, "Val1: %d", OCR1A); // For LCD
+		lcd_wrLine1AtPos(nums, 0);		// For LCD
 		// do something else
 		wait(50);				// every 50 ms (busy waiting)
 		displayTime();
