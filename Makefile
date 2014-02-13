@@ -4,7 +4,7 @@
 
 SHELL := /bin/bash
 RM := rm -rf
-CC := avr-gcc
+CC := avr-gcc -std=gnu99 -Wall -mmcu=atmega128
 
 USER_OBJS :=
 
@@ -37,7 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-lcd.c \
+lcd_2.c \
 dag3_1.c
 
 
@@ -48,19 +48,19 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-lcd.o \
+lcd_2.o \
 dag3_1.o
 
 OBJS_AS_ARGS +=  \
-lcd.o \
+lcd_2.o \
 dag3_1.o
 
 C_DEPS +=  \
-lcd.d \
+lcd_2.d \
 dag3_1.d
 
 C_DEPS_AS_ARGS +=  \
-lcd.d \
+lcd_2.d \
 dag3_1.d
 
 OUTPUT_FILE_PATH +=dag3_1.elf
@@ -69,7 +69,7 @@ OUTPUT_FILE_PATH_AS_ARGS +=dag3_1.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
-OUTPUT_FILE_DEP:= ./makedep.mk
+OUTPUT_FILE_DEP:= 
 
 LIB_DEP+= 
 
@@ -86,7 +86,7 @@ LIB_DEP+=
 %.o: .%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 3.4.2
-	avr-gcc  -funsigned-char -funsigned-bitfields -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega128 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
+	avr-gcc  -funsigned-char -funsigned-bitfields -std=gnu99 -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega128 -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
 	@echo Finished building: $<
 	
 
@@ -114,8 +114,8 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP)
 	@echo Building target: $@
-	@echo Invoking: AVR/GNU Linker : 3.4.2
-	avr-gcc -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="dag3_1.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
+	@echo Invoking: AVR/GNU Linker : 3.4.2 lol
+	avr-gcc -std=gnu99 -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)  -Wl,-Map="dag3_1.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
 	@echo Finished building target: $@
 	"avr-objcopy" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "dag3_1.elf" "dag3_1.hex"
 	"avr-objcopy" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "dag3_1.elf" "dag3_1.eep" || exit 0

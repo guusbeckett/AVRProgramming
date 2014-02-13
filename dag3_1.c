@@ -21,6 +21,7 @@
 #include <util/delay.h>
 #include <string.h>
 #include <stdio.h>
+#include "lcd_2.h"
 
 #define BIT(x)	(1 << (x))
 
@@ -37,16 +38,18 @@ void wait( int ms )
 // Main program: Counting on T2
 int main( void )
 {
+	lcd_init();
 	TCCR2 = 0x07;					// Initialize T2: ext.counting, rising edge
 	DDRD &= ~BIT(7);				// set PORTD.7 for input for input
 	DDRB = 0xFF;					// set PORTB for output
-
+	char* nums = malloc(5*sizeof(char));
 	while (1)
 	{
+		sprintf(nums, "%d", TCNT2);
+		//char* lel = "banaan"; lcd_writeLine1(lel);
+		lcd_wrLine1AtPos(nums, 0);
 		PORTB = TCNT2;				// show value counter 2
-
 		wait(10);					// every 10 ms
 	}
+	free(nums);
 }
-
-	

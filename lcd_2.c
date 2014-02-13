@@ -13,7 +13,8 @@
 */
 
 
-#include "lcd.h"
+#include "lcd_2.h"
+#include <avr/io.h>
 
 // lcd_command: schrijf command byte (RS=0)
 // eerst hoge nibble, dan de lage
@@ -55,14 +56,14 @@ void lcd_writeChar( unsigned char dat )
 //
 void lcd_init( void )
 {
-	DDRC=0xFF;						// PORT D is output to LCD display
+	DDRC=0xFC;						// PORT C is output to LCD display
 	lcd_command( 0x01 );			// clear display
 	lcd_command( 0x02 );			// return home
 	lcd_command( 0x28 );			// mode: 4 bits interface data, 2 lines,5x8 dots
 	lcd_command( 0x0C );			// display: on, cursor off, blinking off
 	lcd_command( 0x06 );			// entry mode: cursor to right, no shift
 	lcd_command( 0x80 );			// RAM adress: 0, first position, line 1
-	_delay_ms(5);
+	_delay_ms(20);
 }
 
 
@@ -70,6 +71,7 @@ void lcd_init( void )
 // write first line
 void lcd_writeLine1 ( char text1[] )
 {
+	lcd_command(0x01);						// clear display
 	lcd_command(0x80);						// first pos line 1, adres $00
 	
 	for ( int i=0; i<strlen(text1); i++ )
