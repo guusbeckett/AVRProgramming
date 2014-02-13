@@ -38,7 +38,7 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 lcd_2.c \
-dag3_1.c
+dag3_5.c
 
 
 PREPROCESSING_SRCS += 
@@ -49,23 +49,23 @@ ASM_SRCS +=
 
 OBJS +=  \
 lcd_2.o \
-dag3_1.o
+dag3_5.o
 
 OBJS_AS_ARGS +=  \
 lcd_2.o \
-dag3_1.o
+dag3_5.o
 
 C_DEPS +=  \
 lcd_2.d \
-dag3_1.d
+dag3_5.d
 
 C_DEPS_AS_ARGS +=  \
 lcd_2.d \
-dag3_1.d
+dag3_5.d
 
-OUTPUT_FILE_PATH +=dag3_1.elf
+OUTPUT_FILE_PATH +=dag3_5.elf
 
-OUTPUT_FILE_PATH_AS_ARGS +=dag3_1.elf
+OUTPUT_FILE_PATH_AS_ARGS +=dag3_5.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -115,13 +115,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 3.4.2 lol
-	avr-gcc -std=gnu99 -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)  -Wl,-Map="dag3_1.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
+	avr-gcc -std=gnu99 -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)  -Wl,-Map="dag3_5.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
 	@echo Finished building target: $@
-	"avr-objcopy" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "dag3_1.elf" "dag3_1.hex"
-	"avr-objcopy" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "dag3_1.elf" "dag3_1.eep" || exit 0
-	"avr-objdump" -h -S "dag3_1.elf" > "dag3_1.lss"
-	"avr-objcopy" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "dag3_1.elf" "dag3_1.srec"
-	"avr-size" "dag3_1.elf"
+	"avr-objcopy" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "dag3_5.elf" "dag3_5.hex"
+	"avr-objcopy" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "dag3_5.elf" "dag3_5.eep" || exit 0
+	"avr-objdump" -h -S "dag3_5.elf" > "dag3_5.lss"
+	"avr-objcopy" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "dag3_5.elf" "dag3_5.srec"
+	"avr-size" "dag3_5.elf"
 	
 	
 
@@ -133,5 +133,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "dag3_1.elf" "dag3_1.a" "dag3_1.hex" "dag3_1.lss" "dag3_1.eep" "dag3_1.map" "dag3_1.srec"
+	rm -rf "dag3_5.elf" "dag3_5.a" "dag3_5.hex" "dag3_5.lss" "dag3_5.eep" "dag3_5.map" "dag3_5.srec"
 	

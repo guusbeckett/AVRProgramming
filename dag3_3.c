@@ -22,9 +22,9 @@
 #include <avr/interrupt.h>
 
 #define BIT(x)	(1 << (x))
-#define COMPAREVALUE 10-1
+#define COMPAREVALUE 25-1
 
-unsigned int tenthValue = 0;
+unsigned int twentyFifthValue = 0;
 
 // wait(): busy waiting for 'ms' millisecond
 // Used library: util/delay.h
@@ -40,7 +40,8 @@ void wait( int ms )
 //
 ISR( TIMER2_COMP_vect )
 {
-	tenthValue++;				// Increment counter
+	twentyFifthValue++;				// Increment counter
+	lcd_command(0x01);
 }
 
 // Initialize timer 2: counting, preset, interrupt on overflow
@@ -56,15 +57,18 @@ void timer2Init( void )
 // Main program: Counting on T2
 int main( void )
 {
+	lcd_init();
 	DDRD &= ~BIT(7);			// set PORTD.7 for input
 	DDRA = 0xFF;				// set PORTA for output (shows countregister)
 	DDRB = 0xFF;				// set PORTB for output (shows tenth value)
 	timer2Init();				// Initialize timer 2
-
+	char* nums = malloc(15*sizeof(char));
 	while (1)
 	{
+		sprintf(nums, "Val1: %d Val2: %d", TCNT2, twentyFifthValue); // For LCD
+		lcd_wrLine1AtPos(nums, 0);		// For LCD
 		PORTA = TCNT2;			// show value counter 2
-		PORTB = tenthValue;		// show value tenth counter
-		wait(10);				// every 10 ms
+		PORTB = twentyFifthValue;		// show value tenth counter
+		wait(100);				// every 10 ms
 	}
 }
