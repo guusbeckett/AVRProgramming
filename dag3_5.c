@@ -19,6 +19,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <string.h>
+#include "lcd_2.h"
 
 #define BIT(x)	(1 << (x))
 
@@ -92,7 +94,7 @@ int main( void )
 	timer1Init();
 	while (1)
 	{
-		sprintf(nums, "%ddays %d:%d:%d", days,PORTA,PORTB,PORTD); // For LCD
+		sprintf(nums, "%02xdays %02x:%02x:%02x", days,PORTA,PORTB,PORTD); // For LCD
 		lcd_wrLine1AtPos(nums, 0);		// For LCD
 		// do something else
 		wait(50);				// every 50 ms (busy waiting)
