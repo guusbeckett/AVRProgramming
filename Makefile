@@ -4,6 +4,7 @@
 
 SHELL := /bin/bash
 RM := rm -rf
+CC := avr-gcc
 
 USER_OBJS :=
 
@@ -31,12 +32,13 @@ OUTPUT_FILE_DEP:=
 LIB_DEP:=
 
 # Every subdirectory with source files must be described here
-SUBDIRS := 
+SUBDIRS :=
 
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../bijlage4.c
+lcd.c \
+dag3_1.c
 
 
 PREPROCESSING_SRCS += 
@@ -46,40 +48,45 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-bijlage4.o
+lcd.o \
+dag3_1.o
 
 OBJS_AS_ARGS +=  \
-bijlage4.o
+lcd.o \
+dag3_1.o
 
 C_DEPS +=  \
-bijlage4.d
+lcd.d \
+dag3_1.d
 
 C_DEPS_AS_ARGS +=  \
-bijlage4.d
+lcd.d \
+dag3_1.d
 
-OUTPUT_FILE_PATH +=bijlage4.elf
+OUTPUT_FILE_PATH +=dag3_1.elf
 
-OUTPUT_FILE_PATH_AS_ARGS +="bijlage4.elf"
+OUTPUT_FILE_PATH_AS_ARGS +=dag3_1.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
-#OUTPUT_FILE_DEP:= ./makedep.mk
+OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+= 
 
 # AVR32/GNU C Compiler
-./bijlage4.o: ./bijlage4.c
-	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler : 3.4.2
-	$(QUOTE)avr-gcc$(QUOTE)  -funsigned-char -funsigned-bitfields -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega128 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
-	@echo Finished building: $<
-	
 
 
-./%.o: ./%.c
+
+
+
+
+
+
+
+%.o: .%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 3.4.2
-	$(QUOTE)avr-gcc$(QUOTE)  -funsigned-char -funsigned-bitfields -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega128 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
+	avr-gcc  -funsigned-char -funsigned-bitfields -DDEBUG  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega128 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
 	@echo Finished building: $<
 	
 
@@ -108,13 +115,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 3.4.2
-	$(QUOTE)avr-gcc$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="bijlage4.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
+	avr-gcc -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="dag3_1.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
 	@echo Finished building target: $@
-	"avr-objcopy" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "bijlage4.elf" "bijlage4.hex"
-	"avr-objcopy" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "bijlage4.elf" "bijlage4.eep" || exit 0
-	"avr-objdump" -h -S "bijlage4.elf" > "bijlage4.lss"
-	"avr-objcopy" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "bijlage4.elf" "bijlage4.srec"
-	"avr-size" "bijlage4.elf"
+	"avr-objcopy" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "dag3_1.elf" "dag3_1.hex"
+	"avr-objcopy" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "dag3_1.elf" "dag3_1.eep" || exit 0
+	"avr-objdump" -h -S "dag3_1.elf" > "dag3_1.lss"
+	"avr-objcopy" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "dag3_1.elf" "dag3_1.srec"
+	"avr-size" "dag3_1.elf"
 	
 	
 
@@ -126,5 +133,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "bijlage4.elf" "bijlage4.a" "bijlage4.hex" "bijlage4.lss" "bijlage4.eep" "bijlage4.map" "bijlage4.srec"
+	rm -rf "dag3_1.elf" "dag3_1.a" "dag3_1.hex" "dag3_1.lss" "dag3_1.eep" "dag3_1.map" "dag3_1.srec"
 	
