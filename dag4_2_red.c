@@ -75,6 +75,8 @@ int main( void )
 	while (1)
 	{
 		int delta = 1;
+		int delta2 = 1;
+		int delta3 = 1; 
 		setRed (0);
 
 		// change some colors
@@ -83,40 +85,29 @@ int main( void )
 		{
 			setRed( red );				// 8-bits PWM on pin OCR1a 
 			delta += 2;					// progressive steps up
-			wait(100);					// delay of 100 ms (busy waiting)
-		}
-		for (int red = 255; red>=0; red-=delta)
-		{
-			setRed( red );				// 8-bits PWM on pin OCR1a 
-			delta -= 2;					// progressive steps down
-			wait(100);					// delay of 100 ms (busy waiting)
-		}
-		for (int green = 0; green<=255; green+=delta)
-		{
+			wait(100);
+			
+			for (int green = 0; green<=255; green+=delta2)
+			{
 			setGreen( green );				// 8-bits PWM on pin OCR1a 
-			delta += 2;					// progressive steps up
-			wait(100);					// delay of 100 ms (busy waiting)
-		}
-		for (int green = 255; green>=0; green-=delta)
-		{
-			setGreen( green );				// 8-bits PWM on pin OCR1a 
-			delta -= 2;					// progressive steps down
-			wait(100);					// delay of 100 ms (busy waiting)
-		}
-		for (int blue = 0; blue<=255; blue+=delta)
-		{
-			setBlue( blue );				// 8-bits PWM on pin OCR1a 
-			delta += 2;					// progressive steps up
-			wait(100);					// delay of 100 ms (busy waiting)
-		}
-		for (int blue = 255; blue>=0; blue-=delta)
-		{
-			setBlue( blue );				// 8-bits PWM on pin OCR1a 
-			delta -= 2;					// progressive steps down
-			wait(100);					// delay of 100 ms (busy waiting)
+			delta2 += 2;					// progressive steps up
+			wait(10);					// delay of 100 ms (busy waiting)
+			
+				for (int blue = 0; blue<=255; blue+=delta3)
+				{
+				setBlue( blue );				// 8-bits PWM on pin OCR1a 
+				delta3 += 2;					// progressive steps up
+				wait(10);					// delay of 100 ms (busy waiting)
+				}
+				delta3 = 1;
+			}
+			delta2 = 1;
+			
 		}
 		setRed( 0 );
 		delta = 1;
+		delta2 = 1;
+		delta3 = 1;
 		wait(100);
 
 		// GREEN
