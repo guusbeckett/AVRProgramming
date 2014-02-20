@@ -51,6 +51,17 @@ void setRed( unsigned char red )
 	OCR1A = red;
 }
 
+void setGreen( unsigned char green )
+{
+	OCR1B = green;
+}
+
+void setBlue( unsigned char blue )
+{
+	OCR1C = blue;
+}
+
+
 // void setGreen( unsigned char green)
 // void setBlue( unsigned char blue)
 
@@ -77,6 +88,30 @@ int main( void )
 		for (int red = 255; red>=0; red-=delta)
 		{
 			setRed( red );				// 8-bits PWM on pin OCR1a 
+			delta -= 2;					// progressive steps down
+			wait(100);					// delay of 100 ms (busy waiting)
+		}
+		for (int green = 0; green<=255; green+=delta)
+		{
+			setGreen( green );				// 8-bits PWM on pin OCR1a 
+			delta += 2;					// progressive steps up
+			wait(100);					// delay of 100 ms (busy waiting)
+		}
+		for (int green = 255; green>=0; green-=delta)
+		{
+			setGreen( green );				// 8-bits PWM on pin OCR1a 
+			delta -= 2;					// progressive steps down
+			wait(100);					// delay of 100 ms (busy waiting)
+		}
+		for (int blue = 0; blue<=255; blue+=delta)
+		{
+			setBlue( blue );				// 8-bits PWM on pin OCR1a 
+			delta += 2;					// progressive steps up
+			wait(100);					// delay of 100 ms (busy waiting)
+		}
+		for (int blue = 255; blue>=0; blue-=delta)
+		{
+			setBlue( blue );				// 8-bits PWM on pin OCR1a 
 			delta -= 2;					// progressive steps down
 			wait(100);					// delay of 100 ms (busy waiting)
 		}

@@ -38,7 +38,7 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 lcd_2.c \
-dag4_1.c
+dag4_2_red.c
 
 
 PREPROCESSING_SRCS += 
@@ -49,23 +49,23 @@ ASM_SRCS +=
 
 OBJS +=  \
 lcd_2.o \
-dag4_1.o
+dag4_2_red.o
 
 OBJS_AS_ARGS +=  \
 lcd_2.o \
-dag4_1.o
+dag4_2_red.o
 
 C_DEPS +=  \
 lcd_2.d \
-dag4_1.d
+dag4_2_red.d
 
 C_DEPS_AS_ARGS +=  \
 lcd_2.d \
-dag4_1.d
+dag4_2_red.d
 
-OUTPUT_FILE_PATH +=dag4_1.elf
+OUTPUT_FILE_PATH +=dag4_2_red.elf
 
-OUTPUT_FILE_PATH_AS_ARGS +=dag4_1.elf
+OUTPUT_FILE_PATH_AS_ARGS +=dag4_2_red.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -115,13 +115,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 3.4.2 lol
-	avr-gcc -std=gnu99 -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)  -Wl,-Map="dag4_1.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
+	avr-gcc -std=gnu99 -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)  -Wl,-Map="dag4_2_red.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mrelax -mmcu=atmega128 
 	@echo Finished building target: $@
-	"avr-objcopy" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "dag4_1.elf" "dag4_1.hex"
-	"avr-objcopy" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "dag4_1.elf" "dag4_1.eep" || exit 0
-	"avr-objdump" -h -S "dag4_1.elf" > "dag4_1.lss"
-	"avr-objcopy" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "dag4_1.elf" "dag4_1.srec"
-	"avr-size" "dag4_1.elf"
+	"avr-objcopy" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "dag4_2_red.elf" "dag4_2_red.hex"
+	"avr-objcopy" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "dag4_2_red.elf" "dag4_2_red.eep" || exit 0
+	"avr-objdump" -h -S "dag4_2_red.elf" > "dag4_2_red.lss"
+	"avr-objcopy" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "dag4_2_red.elf" "dag4_2_red.srec"
+	"avr-size" "dag4_2_red.elf"
 	
 	
 
@@ -133,5 +133,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP)
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "dag4_1.elf" "dag4_1.a" "dag4_1.hex" "dag4_1.lss" "dag4_1.eep" "dag4_1.map" "dag4_1.srec"
+	rm -rf "dag4_2_red.elf" "dag4_2_red.a" "dag4_2_red.hex" "dag4_2_red.lss" "dag4_2_red.eep" "dag4_2_red.map" "dag4_2_red.srec"
 	
