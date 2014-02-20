@@ -57,6 +57,12 @@ ISR( TIMER1_COMPA_vect )
 	}
 }
 
+ISR( TIMER2_COMP_vect )
+{
+	TCNT2 = TimerPreset;	// Preset value
+	tenthValue++;			// Increment counter
+}
+
 // Initialize timer 2: counting, preset, interrupt on overflow
 void timer1Init( void )
 {
@@ -65,6 +71,16 @@ void timer1Init( void )
 	SREG |= BIT(7);					// turn_on intr all
 	TCCR1B = 0b00001100;			// Initialize T1: timer, prescaler=256, 
 									// 	compare output disconnected, CTC, RUN
+}
+
+// Initialize timer2
+//
+void timer2Init( void )
+{
+	TCNT2 = TimerPreset;	// Preset value of counter 2
+	TIMSK |= BIT(6);		// T2 overflow interrupt enable
+	SREG |= BIT(7);			// turn_on intr all
+	TCCR2 = 0x0b;			// Initialize T2: ext.counting, rising edge, run
 }
 
 // Display seconds on PORTD, minutes on PORTB& hours on PORTA
@@ -90,7 +106,6 @@ int main( void )
 	DDRD = 0xFF;				// set PORTD for output (shows s, min, h)
 	DDRB = 0xFF;
 	DDRA = 0xFF;
-	DDRD = 0xFF;
 	timer1Init();
 	while (1)
 	{

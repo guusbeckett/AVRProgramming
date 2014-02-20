@@ -33,10 +33,10 @@ void wait( int ms )
 	}
 }
 
-// lcdCommand: schrijf command byte (RS=0)
+// lcd_2Command: schrijf command byte (RS=0)
 // eerst hoge nibble, dan de lage
 // 
-void lcdCommand ( unsigned char command )
+void lcd_2Command ( unsigned char command )
 {
 	PORTC = command & 0xF0;		// hoge nibble
 	PORTC = PORTC | 0x08;		// start (EN=1)
@@ -52,7 +52,7 @@ void lcdCommand ( unsigned char command )
 // Schrijf data byte (RS=1)
 // eerst hoge nibble, dan de lage
 // 
-void lcdWriteChar( unsigned char dat )
+void lcd_2WriteChar( unsigned char dat )
 {
 	PORTC = dat & 0xF0;			// hoge nibble
 	PORTC = PORTC | 0x0C;		// data (RS=1), start (EN =1)
@@ -68,53 +68,53 @@ void lcdWriteChar( unsigned char dat )
 
 // Initialisatie LCD
 //
-void init_lcd(void)
+void init_lcd_2(void)
 {
-	lcdCommand( 0x02 );			// return home
-	lcdCommand( 0x28 );			// mode: 4 bits interface data,
+	lcd_2Command( 0x02 );			// return home
+	lcd_2Command( 0x28 );			// mode: 4 bits interface data,
 							// 2 lines,5x8 dots
-	lcdCommand( 0x0C );			// display: on, cursor off, blinking off
-	lcdCommand( 0x06 );			// entry mode: cursor to right, no shift
-	lcdCommand( 0x80 );			// RAM adress: 0, first position, line 1
+	lcd_2Command( 0x0C );			// display: on, cursor off, blinking off
+	lcd_2Command( 0x06 );			// entry mode: cursor to right, no shift
+	lcd_2Command( 0x80 );			// RAM adress: 0, first position, line 1
 }
 
 //
 // write upper line
-void lcd_writeLine1 ( char text1[] )
+void lcd_2_writeLine1 ( char text1[] )
 {
 	// eerst de eerste 8 karakters = regel 1
-	lcdCommand(0x80);			// first position, line 1, adress $00
+	lcd_2Command(0x80);			// first position, line 1, adress $00
 	for ( int i=0; i<16; i++ )
 	{
-		lcdWriteChar( text1[i] );
+		lcd_2WriteChar( text1[i] );
 	}
 } 
 
 //
 // write second line
-void lcd_writeLine2 ( char text2[] )
+void lcd_2_writeLine2 ( char text2[] )
 {
 	// dan de tweede 8 karakters = regel 2
-	lcdCommand(0xC0);			// first position, line 2, adress $40
+	lcd_2Command(0xC0);			// first position, line 2, adress $40
 
 	for ( int i=0; i<16; i++ )
 	{
-		lcdWriteChar( text2[i] );
+		lcd_2WriteChar( text2[i] );
 	}
 } 
 
 //
 // shift characters left or right
-void lcdShift(int displacement)
+void lcd_2Shift(int displacement)
 {
 	// size of the displacement
 	int number = displacement<0 ? -displacement : displacement;
 	for (int i=0; i<number; i++)
 	{
 		if (displacement <0)
-			lcdCommand(0x18);
+			lcd_2Command(0x18);
 		else
-			lcdCommand(0x1C);
+			lcd_2Command(0x1C);
 	}
 }
 
@@ -122,15 +122,15 @@ void lcdShift(int displacement)
 int main (void)
 {
 	DDRC=0xFF;					// PORT C is output
-	init_lcd();				// initialize LCD
+	init_lcd_2();				// initialize LCD
 
-	lcdWriteLine1(regel1);
-	lcdWriteLine2(regel2);
+	lcd_2WriteLine1(regel1);
+	lcd_2WriteLine2(regel2);
 
 	wait(1000);
-	lcdShift(-3);
+	lcd_2Shift(-3);
 	wait(1000);
-	lcdShift(8);
+	lcd_2Shift(8);
 
 	return 1;
 }// end program 

@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"PORT",
+				"PORTB"
+			],
+			[
+				"tent",
+				"tenthValue"
+			],
+			[
+				"lcd",
+				"lcd_command"
+			],
+			[
+				"inc",
+				"include"
+			],
+			[
 				"sho",
 				"showNumber"
 			],
@@ -38,10 +54,6 @@
 			[
 				"time",
 				"timeBuffer"
-			],
-			[
-				"lcd",
-				"LcdWriteString"
 			],
 			[
 				"wat",
@@ -92,6 +104,62 @@
 	"buffers":
 	[
 		{
+			"file": "dag3_1.c",
+			"settings":
+			{
+				"buffer_size": 1322,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "dag3_2.c",
+			"settings":
+			{
+				"buffer_size": 2004,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "dag3_3.c",
+			"settings":
+			{
+				"buffer_size": 1981,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "dag3_5.c",
+			"settings":
+			{
+				"buffer_size": 2853,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Makefile",
+			"settings":
+			{
+				"buffer_size": 2825,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "lcd_2.c",
+			"settings":
+			{
+				"buffer_size": 3121,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "lcd_2.h",
+			"settings":
+			{
+				"buffer_size": 1302,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "Blinky.c",
 			"settings":
 			{
@@ -100,11 +168,19 @@
 			}
 		},
 		{
-			"file": "Makefile",
+			"file": "lcd.c",
 			"settings":
 			{
-				"buffer_size": 3208,
-				"line_ending": "Windows"
+				"buffer_size": 2207,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "main.c",
+			"settings":
+			{
+				"buffer_size": 143,
+				"line_ending": "Unix"
 			}
 		},
 		{
@@ -117,6 +193,14 @@
 			}
 		},
 		{
+			"file": "lcd.h",
+			"settings":
+			{
+				"buffer_size": 213,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "bijlage2.c",
 			"settings":
 			{
@@ -125,12 +209,23 @@
 			}
 		},
 		{
+			"contents": "/* Project name:     Demo2_4 : demo LCD display\n * Author: TI-Avans, WvdE\n * Revision History: \n     20101220: - initial release;\n * Description:\n     This is a demo of writing text to the LCD2x16 display \n	 the diaplay is connected to PORTD (see: manual BIGAVR6)\n * Test configuration:\n     MCU:             ATmega128\n     Dev.Board:       BIGAVR6\n     Oscillator:      External Clock 08.0000 MHz\n     Ext. Modules:    -\n     SW:              AVR-GCC\n * NOTES:\n     - Turn ON the PORT LEDs at SW12.1 - SW12.8\n*/\n\n#include <avr/io.h>\n#include <util/delay.h>\n\n#define BIT(x)	(1 << (x))\n\nchar regel1[]= \"dit is een demo \";\nchar regel2[]= \"van LCD-display \";\n\n// wait(): busy waiting for 'ms' millisecond\n// Used library: util/delay.h\nvoid wait( int ms )\n{\n	for (int i=0; i<ms; i++)\n	{\n		_delay_ms( 1 );		// library function (max 30 ms at 8MHz)\n	}\n}\n\n// lcd_2Command: schrijf command byte (RS=0)\n// eerst hoge nibble, dan de lage\n// \nvoid lcd_2Command ( unsigned char command )\n{\n	PORTC = command & 0xF0;		// hoge nibble\n	PORTC = PORTC | 0x08;		// start (EN=1)\n	wait (1);					// wait 1 ms\n	PORTC = 0x00;				// stop\n	\n	PORTC = (command & 0x0F) << 4;	// lage nibble, shift lage naar hoge bits\n	PORTC = PORTC | 0x08;		// start (EN =1)\n	wait (1);					// wait 1 ms\n	PORTC = 0x00;				// stop (EN=0 RS=0)	\n}\n\n// Schrijf data byte (RS=1)\n// eerst hoge nibble, dan de lage\n// \nvoid lcd_2WriteChar( unsigned char dat )\n{\n	PORTC = dat & 0xF0;			// hoge nibble\n	PORTC = PORTC | 0x0C;		// data (RS=1), start (EN =1)\n	wait (1);					// wait 1 ms\n	PORTC = 0x04;				// stop\n		\n	PORTC = (dat & 0x0F) << 4;		// lage nibble\n	PORTC = PORTC | 0x0C;		// data (RS=1), start (EN =1)\n	wait (1);					// pulse 1 ms\n	PORTC = 0x00;				// stop (EN=0 RS=0)\n}\n\n\n// Initialisatie LCD\n//\nvoid init_lcd_2(void)\n{\n	lcd_2Command( 0x02 );			// return home\n	lcd_2Command( 0x28 );			// mode: 4 bits interface data,\n							// 2 lines,5x8 dots\n	lcd_2Command( 0x0C );			// display: on, cursor off, blinking off\n	lcd_2Command( 0x06 );			// entry mode: cursor to right, no shift\n	lcd_2Command( 0x80 );			// RAM adress: 0, first position, line 1\n}\n\n//\n// write upper line\nvoid lcd_2_writeLine1 ( char text1[] )\n{\n	// eerst de eerste 8 karakters = regel 1\n	lcd_2Command(0x80);			// first position, line 1, adress $00\n	for ( int i=0; i<16; i++ )\n	{\n		lcd_2WriteChar( text1[i] );\n	}\n} \n\n//\n// write second line\nvoid lcd_2_writeLine2 ( char text2[] )\n{\n	// dan de tweede 8 karakters = regel 2\n	lcd_2Command(0xC0);			// first position, line 2, adress $40\n\n	for ( int i=0; i<16; i++ )\n	{\n		lcd_2WriteChar( text2[i] );\n	}\n} \n\n//\n// shift characters left or right\nvoid lcd_2Shift(int displacement)\n{\n	// size of the displacement\n	int number = displacement<0 ? -displacement : displacement;\n	for (int i=0; i<number; i++)\n	{\n		if (displacement <0)\n			lcd_2Command(0x18);\n		else\n			lcd_2Command(0x1C);\n	}\n}\n\n// main program\nint main (void)\n{\n	DDRC=0xFF;					// PORT C is output\n	init_lcd_2();				// initialize LCD\n\n	lcd_2WriteLine1(regel1);\n	lcd_2WriteLine2(regel2);\n\n	wait(1000);\n	lcd_2Shift(-3);\n	wait(1000);\n	lcd_2Shift(8);\n\n	return 1;\n}// end program ",
 			"file": "bijlage4.c",
+			"file_size": 3048,
+			"file_write_time": 130361716620000000,
 			"settings":
 			{
-				"buffer_size": 3048,
+				"buffer_size": 3094,
 				"line_ending": "Unix",
 				"name": "/* Project name:     Demo2_4 : demo LCD display"
+			}
+		},
+		{
+			"file": "dag3_4.c",
+			"settings":
+			{
+				"buffer_size": 1645,
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -161,6 +256,8 @@
 	},
 	"file_history":
 	[
+		"/Users/guube/AVRProgramming/dag3_2.c",
+		"/Users/guube/AVRProgramming/Blinky.c",
 		"/Users/guube/Dropbox/Sharen met Jim en Guus/AVRProgrammeren/bijlage2_1.c",
 		"/Users/guube/Dropbox/Sharen met Jim en Guus/AVRProgrammeren/bijlage2.c",
 		"/Users/guube/Dropbox/Sharen met Jim en Guus/AVRProgrammeren/bijlage1_2.c",
@@ -197,6 +294,7 @@
 		"height": 93.0,
 		"where_history":
 		[
+			"dag3_5.c",
 			""
 		]
 	},
@@ -205,6 +303,31 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"PORTC",
+			"DDRC",
+			"PORTD",
+			"PORTDD",
+			"D",
+			"CompareValue",
+			"dag3_4",
+			"dag3_3",
+			"dag3_2",
+			"dag3_3",
+			"dag3_1",
+			"gnu99",
+			"lcd",
+			"Week2",
+			"Lcd",
+			"Include/",
+			"./Include/",
+			"../Include/",
+			"../Source/",
+			"Source/",
+			"./Source/",
+			"./Source",
+			".exe",
+			"C:\\Program Files (x86)\\Atmel\\Atmel Toolchain\\AVR8 GCC\\Native\\3.4.2.1002\\avr8-gnu-toolchain\\bin\\",
+			"(QUOTE)C:\\Program Files (x86)\\Atmel\\Atmel Toolchain\\AVR8 GCC\\Native\\3.4.2.1002\\avr8-gnu-toolchain\\bin\\avr-gcc.exe$(QUOTE)",
 			"bijlage2",
 			"bijlage1",
 			"hex",
@@ -232,6 +355,17 @@
 		"regex": false,
 		"replace_history":
 		[
+			"PORTD",
+			"DDRD",
+			"dag3_5",
+			"dag3_4",
+			"dag3_3",
+			"dag3_2",
+			"lcd_2",
+			"dag3_1",
+			"lcd",
+			"",
+			"avr-gcc",
 			"bijlage4",
 			"bijlage2",
 			"bijlage1",
@@ -239,18 +373,216 @@
 		],
 		"reverse": false,
 		"show_context": false,
-		"use_buffer2": true,
+		"use_buffer2": false,
 		"whole_word": false,
 		"wrap": true
 	},
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
+					"file": "dag3_1.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1322,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1152,
+								1152
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 285.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "dag3_2.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2004,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "dag3_3.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1981,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1729,
+								1729
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "dag3_5.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2853,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2331,
+								2331
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 671.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "Makefile",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2825,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1889,
+								1889
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Makefile/Makefile.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1259.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "lcd_2.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3121,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1512,
+								1518
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 750.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "lcd_2.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1302,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								820,
+								820
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 247.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
 					"file": "Blinky.c",
 					"semi_transient": false,
 					"settings":
@@ -262,52 +594,81 @@
 						"selection":
 						[
 							[
-								2197,
-								2197
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C.tmLanguage",
+							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2277.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "Makefile",
+					"buffer": 8,
+					"file": "lcd.c",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3208,
+						"buffer_size": 2207,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2996,
-								2996
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Makefile/Makefile.tmLanguage"
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 9,
+					"file": "main.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 143,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
 					"file": "bijlage1.c",
 					"semi_transient": false,
 					"settings":
@@ -319,24 +680,53 @@
 						"selection":
 						[
 							[
-								1965,
-								1676
+								1689,
+								1689
 							]
 						],
 						"settings":
 						{
 							"auto_name": "/* Project name: 		Demo2_1 - LED_Blinking with int",
-							"syntax": "Packages/C++/C.tmLanguage"
+							"syntax": "Packages/C++/C.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 852.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 11,
+					"file": "lcd.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
 					"file": "bijlage2.c",
 					"semi_transient": false,
 					"settings":
@@ -358,27 +748,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 492.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 13,
 					"file": "bijlage4.c",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3048,
+						"buffer_size": 3094,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2916,
-								2940
+								2954,
+								2980
 							]
 						],
 						"settings":
@@ -388,7 +778,35 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1392.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "dag3_4.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1645,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								591,
+								591
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 133.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -448,6 +866,26 @@
 		"selected_items":
 		[
 			[
+				"make",
+				"~/AVRProgramming/Makefile"
+			],
+			[
+				"lcd_2",
+				"~/AVRProgramming/lcd_2.c"
+			],
+			[
+				"",
+				"~/AVRProgramming/lcd_2.c"
+			],
+			[
+				"dag",
+				"~/AVRProgramming/dag3_1.c"
+			],
+			[
+				"ld",
+				"~/AVRProgramming/lcd.c"
+			],
+			[
 				"rtc",
 				"include/rtc.h"
 			],
@@ -477,7 +915,7 @@
 		[
 			[
 				"",
-				"~/Programmeerbare-Logica/Opdrachten Joris/ProgrammeerbareLogica.sublime-project"
+				"~/Cstuff.sublime-project"
 			]
 		],
 		"width": 380.0
