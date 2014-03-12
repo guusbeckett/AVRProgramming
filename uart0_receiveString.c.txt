@@ -1,0 +1,16 @@
+int uart0_receiveString( char* string)
+{
+	int 	stop = 0;						// boolean for stop value
+	char	ch;
+	while (!stop)							// while contunie
+	{
+		while (!(UCSR0A & BIT(RXC0))) ;		// if RX0 is set: unread data present in buffer			
+		ch = UDR0;							// read ch
+		if ( ch == LF )						// stop at LF
+			stop = 1;					
+		else
+			*string++ = ch;					// else fill buffer
+		*string = '\0';						// stringterminator
+	}
+	return 0;
+}
